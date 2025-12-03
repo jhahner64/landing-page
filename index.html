@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HighSierra Networks</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            /* Professional Charcoal Background */
+            background-color: #1a1c21; 
+            
+            /* Soft Sky Blue Text */
+            color: #B0DFFC; 
+            
+            font-family: "Rajdhani", sans-serif;
+            
+            /* Softened Terminal Glow Effect */
+            text-shadow: 0 0 1.5px rgba(176, 223, 252, 0.4), 0 0 8px rgba(176, 223, 252, 0.1);
+
+            font-size: clamp(20px, 4vw, 38px); 
+            margin: 0;
+            padding: clamp(30px, 8vw, 80px);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Text container */
+        #type {
+            display: inline-block;
+            white-space: pre-wrap;
+            opacity: 0;
+            animation: fadeIn 1.0s ease forwards;
+            animation-delay: 0.5s;
+            line-height: 1.4; /* Better spacing for sans-serif */
+            max-width: min(100%, 900px);
+        }
+
+        /* The Blinking Block Cursor */
+        #type::after {
+            content: ""; 
+            display: inline-block;
+            vertical-align: text-bottom;
+            width: 0.5em; /* Slightly thinner block */
+            height: 1.1em;
+            background-color: #B0DFFC; /* Matches text color */
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Class to hide cursor at the very end */
+        #type.cursor-gone::after {
+            display: none;
+            animation: none;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<span id="type"></span>
+
+<script>
+    /* ------------------------------------------------
+       HIGHSIERRA NETWORKS: COMMERCIAL CONFIGURATION
+       ------------------------------------------------ */
+
+    /* The starting sentence stem - Focus on enabling vital operations */
+    const base = "Enabling vital connectivity for ";
+
+    /* The Cyclical Endings - Focus on commercial and industrial reliability */
+    const endings = [
+        "remote worksites.",
+        "dispersed enterprises.",
+        "unpredictable climates.",
+        "intuitive-first users.",
+        "disaster recovery.",
+        "life-saving communication.",
+        "where the map ends.", // Index N-2: Triggers first full wipe
+        "your mission." // Index N-1: Triggers second full wipe
+    ];
+
+    /* The Final Block - Commercial CTA */
+    const finalBlock = "HighSierra Networks.\nRugged. Reliable. Certified.\n\nInitialize uplink: Ops@HighSierra.it.com";
+
+    // --- NO CHANGES NEEDED BELOW THIS LINE ---
+
+    const typeEl = document.getElementById("type");
+
+    /* State */
+    let i = 0;           
+    let j = 0;           
+    let erasing = false; 
+
+    /* HELPER: Delay - ~25% faster typing speed */
+    function delay(fn, ms) {
+        return setTimeout(() => requestAnimationFrame(fn), ms);
+    }
+    
+    function getRandomTypingSpeed() {
+        return Math.random() * 55 + 45; 
+    }
+
+    /* 1. Type the initial base phrase */
+    function typeInitialBase() {
+        let k = 0;
+        function step() {
+            typeEl.textContent = base.slice(0, k);
+            k++;
+            if (k <= base.length) {
+                return delay(step, getRandomTypingSpeed());
+            }
+            delay(() => { j = 0; i = 0; erasing = false; loop(); }, 450);
+        }
+        step();
+    }
+
+    /* 2. Main loop for the list items */
+    function loop() {
+        const ending = endings[i];
+        const secondToLastIndex = endings.length - 2; 
+        const lastIndex = endings.length - 1;         
+
+        // --- TYPING PHASE ---
+        if (!erasing) {
+            typeEl.textContent = base + ending.slice(0, j);
+            j++;
+
+            if (j <= ending.length) {
+                return delay(loop, getRandomTypingSpeed());
+            }
+
+            // Finished typing. Pause before erasing.
+            erasing = true;
+            return delay(loop, 1100); 
+        }
+
+        // --- ERASING PHASE ---
+        
+        // Scenario A: Standard Item (Partial Delete)
+        if (i < secondToLastIndex) {
+            if (j > 0) {
+                j--;
+                typeEl.textContent = base + ending.slice(0, j);
+                return delay(loop, Math.random() * 50 + 40); 
+            }
+            erasing = false;
+            i++;
+            return delay(loop, 400); 
+        } 
+        
+        // Scenario B: Full Line Delete Trigger 
+        else if (i === secondToLastIndex) {
+            const current = typeEl.textContent;
+            if (current.length > 0) {
+                typeEl.textContent = current.slice(0, -1);
+                return delay(loop, Math.random() * 40 + 30); 
+            }
+            erasing = false;
+            j = 0;
+            i = lastIndex;
+            return delay(typeLastLine, 800);
+        }
+    }
+
+    /* 3. Type the very last base + ending */
+    function typeLastLine() {
+        const sentence = base + endings[endings.length - 1];
+        let k = 0;
+
+        function step() {
+            typeEl.textContent = sentence.slice(0, k);
+            k++;
+
+            if (k <= sentence.length) {
+                return delay(step, getRandomTypingSpeed());
+            }
+
+            // Pause, then delete the WHOLE line again 
+            return delay(() => {
+                deleteWhole(() => delay(typeFinalBlock, 600));
+            }, 2000); 
+        }
+        step();
+    }
+
+    /* Helper: Deletes everything currently on screen */
+    function deleteWhole(onDone) {
+        function step() {
+            const cur = typeEl.textContent;
+            if (cur.length > 0) {
+                typeEl.textContent = cur.slice(0, -1);
+                return delay(step, Math.random() * 30 + 20); 
+            }
+            if (onDone) onDone();
+        }
+        step();
+    }
+
+    /* 4. Type the final Multi-line Block and fade the cursor */
+    function typeFinalBlock() {
+        let k = 0;
+        
+        function step() {
+            typeEl.textContent = finalBlock.slice(0, k);
+            k++;
+
+            if (k <= finalBlock.length) {
+                return delay(step, getRandomTypingSpeed());
+            }
+            
+            // FADE OUT CURSOR after 2 seconds
+            setTimeout(() => {
+                typeEl.classList.add("cursor-gone");
+            }, 2000);
+        }
+        step();
+    }
+
+    /* Start the engine */
+    typeInitialBase();
+</script>
+
+</body>
+</html>
